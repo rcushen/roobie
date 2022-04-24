@@ -5,13 +5,13 @@
 }
 
 body {
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Times New Roman', sans-serif;
     background-color: #011627;
     color: #F6F7F8;
 }
 
 .landing-page-container {
-    height: 100vh;
+    height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -22,7 +22,8 @@ body {
 }
 
 h1 {
-    text-transform: uppercase;
-    font-size: 6rem;
+    text-transform: lowercase;
+    font-size: 5rem;
+    font-weight: 100;
 }
 
