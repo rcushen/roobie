@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+import _ from 'lodash';
+import results from './sampleData/sampleResults';
+const sampleResults = _.sampleSize(results, 10);
+
 // Initial State
 const initialState = {
     status: 'idle',
@@ -35,17 +39,36 @@ const resultsSlice = createSlice({
 // Async Actions
 const fetchResults = createAsyncThunk(
     'results/fetchResults',
-    async () => {
-        const response = await { data: ["some", "fake", "results"] };
+    async (args, thunkAPI) => {
+        const state = thunkAPI.getState();
+        const searchParameters = state.search.searchParameters;
+        const query = {
+            occasion: searchParameters.occasion.friends ? 'friends' : 'date',
+            style: searchParameters.style.classy ? 'classy' : 'casual',
+            ambience: searchParameters.ambience.lively ? 'lively' : 'intimate'
+        };
+        const queryString = '?' + 
+            'occasion=' + query.occasion + '&' +
+            'style=' + query.style + '&' +
+            'ambience=' + query.ambience;
+        const endpoint = '/search';
+        console.log(endpoint + queryString);
+        const response = await { data: sampleResults };
         return response.data;
     }
 );
 
 // Selectors
+const selectResultsStatus = state => state.results.status;
+const selectResults = state => state.results.results;
 
 // Exports
 export const { populateResults } = resultsSlice.actions;
 export {
     fetchResults,
+}
+export {
+    selectResultsStatus,
+    selectResults
 }
 export default resultsSlice.reducer;

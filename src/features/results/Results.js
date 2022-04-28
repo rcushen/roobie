@@ -1,23 +1,43 @@
-import _, { sample } from 'lodash';
+import { useSelector } from 'react-redux';
 
-import results from './sampleData/sampleResults';
-const sampleResults = _.sampleSize(results, 10);
+import { selectResultsStatus, selectResults } from './resultsSlice';
 
 const Results = () => {
-    return (
-        <div className="results-container">
-            <div className="content-container">
-                <div className="results-header">
-                    <p>Showing venues for <em>a date</em> that are <em>classy</em> and <em>intimate</em>...</p>
-                </div>
-                <div className="results-body">
-                    {sampleResults.map((record, key) => {
-                        return <ResultCard key={key} details={record} />
-                    })}
+    const resultsStatus = useSelector(selectResultsStatus);
+    const results = useSelector(selectResults);
+
+    if (resultsStatus === 'loading') {
+        return (
+            <div className="results-container">
+                <div className="content-container">
+                    <h1>Loading...</h1>
                 </div>
             </div>
-        </div>
-    )
+        )
+    } else if (resultsStatus === 'succeeded') {
+        return (
+            <div className="results-container">
+                <div className="content-container">
+                    <div className="results-header">
+                        <p>Showing venues for <em>a date</em> that are <em>classy</em> and <em>intimate</em>...</p>
+                    </div>
+                    <div className="results-body">
+                        {results.map((record, key) => {
+                            return <ResultCard key={key} details={record} />
+                        })}
+                    </div>
+                </div>
+            </div>
+        )
+    } else if (resultsStatus === 'error') {
+        return (
+            <div className="results-container">
+                <div className="content-container">
+                    <h1>Oh no! Error...</h1>
+                </div>
+            </div>
+        )
+    } 
 };
 
 const ResultCard = (props) => {
