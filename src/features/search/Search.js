@@ -8,7 +8,10 @@ import {
   selectReadyToSearch 
 } from './searchSlice';
 import { flipParameterValue } from './searchSlice';
-import { fetchResults } from '../results/resultsSlice';
+import { 
+  fetchSearchResults,
+  fetchNearMeResults
+} from '../results/resultsSlice';
 
 const Search = () => {
   const dispatch = useDispatch();
@@ -19,6 +22,7 @@ const Search = () => {
   const paramsAmbience = useSelector(selectParamsAmbience);
   const readyToSearch = useSelector(selectReadyToSearch);
 
+  // Helper functions
   const setParameterButtonClasses = (parameterValue, side) => {
     return "search-parameter-button" + (parameterValue ? " search-parameter-button-active" : "") + (side === "left" ? " search-parameter-button-left" : " search-parameter-button-right")
   };
@@ -26,15 +30,20 @@ const Search = () => {
     return "search-button" + (readyToSearch ? " search-button-ready" : " search-button-notready")
   };
 
+  // Handler functions
   const handleParameterButtonClick = (group, parameter) => {
     dispatch(flipParameterValue({ group, parameter }))
   };
   const handleSearchButtonClick = () => {
     if (readyToSearch) {
-      dispatch(fetchResults());
+      dispatch(fetchSearchResults());
       navigate('/results', { replace: true })
     }
-  }
+  };
+  const handleNearMeButtonClick = () => {
+    dispatch(fetchNearMeResults());
+    navigate('/results', { replace: true })
+  };
 
   return (
     <div className="search-container">
@@ -85,6 +94,13 @@ const Search = () => {
             className={setSearchButtonClasses(readyToSearch)}
             onClick={handleSearchButtonClick}>
             Search
+          </button>
+        </div>
+        <div className="near-me-form">
+        <button
+            className="near-me-button"
+            onClick={handleNearMeButtonClick}>
+            Just show me somewhere near
           </button>
         </div>
       </div>

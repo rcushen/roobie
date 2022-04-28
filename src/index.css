@@ -105,7 +105,7 @@ button {
   color: var(--secondary);
 }
 
-.search-form {
+.search-form, .near-me-form {
   margin: 10px auto;
   padding: 10px;
   width: 90%;
@@ -154,13 +154,19 @@ button {
   font-size: 1.25rem;
 }
 
+.near-me-button {
+  width: 150px;
+  height: 50px;
+  font-size: 1rem;
+}
+
 .search-button-notready {
   color: var(--secondary);
   background-color: var(--primary);
   border: 1px solid var(--secondary);
 }
 
-.search-button-ready {
+.search-button-ready, .near-me-button {
   color: var(--primary);
   background-color: var(--secondary);
   border: 1px solid var(--secondary);
@@ -168,7 +174,7 @@ button {
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
-.search-button-ready:hover {
+.search-button-ready:hover, .near-me-button:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 

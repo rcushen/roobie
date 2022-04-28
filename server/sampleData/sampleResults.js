@@ -1,4 +1,4 @@
-export default [
+module.exports = [
     {
       "Name": "Arbory",
       "Category": "Bar",

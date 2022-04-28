@@ -16,6 +16,10 @@ const initialState = {
       intimate: false
     },
   },
+  nearMeParameters: {
+    lat: -37.815338,
+    lon: 144.963226
+  },
   readyToSearch: false
 };
 
@@ -46,7 +50,7 @@ export const searchSlice = createSlice({
           state.readyToSearch = true;
         } else {
           state.readyToSearch = false;
-        }
+        };
     },
 
   }
