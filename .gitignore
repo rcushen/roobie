@@ -9,6 +9,10 @@
 # production
 /build
 
+# data
+/server/dbImports
+/server/sampleData
+
 # misc
 .DS_Store
 .env.local
