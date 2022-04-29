@@ -10,7 +10,7 @@
 /build
 
 # data
-/server/dbImports
+/server/db
 /server/sampleData
 
 # misc
