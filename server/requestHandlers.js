@@ -1,16 +1,9 @@
 const { Pool } = require('pg');
 const _ = require('lodash');
 
-const results = require('./sampleData/sampleResults.js');
-const sampleResults = _.sampleSize(results, 9);
+const { config } = require('../credentials/dbConfig')
 
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'roobie',
-    password: 'ryan',
-    port: 5432,
-});
+const pool = new Pool(config);
 
 const checkValiditySearchQuery = searchQuery => true;
 const checkValidityNearMeQuery = nearMeQuery => true;
@@ -41,8 +34,7 @@ const searchHandler = (req, res) => {
         };
         res.status(200).send({
             searchQuery,
-            results: sampleResults,
-            data: result.rows
+            searchResults: _.sampleSize(result.rows, 8)
         });
     });
 };
@@ -72,8 +64,7 @@ const nearMeHandler = (req, res) => {
         };
         res.status(200).send({
             nearMeQuery,
-            results: sampleResults,
-            data: result.rows
+            nearMeResults: _.sampleSize(result.rows, 8)
         });
     });
 };
@@ -81,4 +72,4 @@ const nearMeHandler = (req, res) => {
 module.exports = {
     searchHandler,
     nearMeHandler
-}
+};

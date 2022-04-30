@@ -11,4 +11,4 @@ app.get('/nearme', nearMeHandler);
 
 app.listen(port, () => {
     console.log('-> Server started...')
-})
+});

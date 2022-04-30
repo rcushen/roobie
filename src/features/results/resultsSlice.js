@@ -59,7 +59,7 @@ const fetchSearchResults = createAsyncThunk(
         
         const response = await fetch(endpoint + queryString);
         const responseJSON = await response.json();
-        return responseJSON.results;
+        return responseJSON.searchResults;
     }
 );
 
@@ -80,7 +80,7 @@ const fetchNearMeResults = createAsyncThunk(
 
         const response = await fetch(endpoint + queryString);
         const responseJSON = await response.json();
-        return responseJSON.results;
+        return responseJSON.nearMeResults;
     }
 )
 

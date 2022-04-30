@@ -45,13 +45,12 @@ const ResultCard = (props) => {
 
     return (
         <div className="results-card">
-            <a><h1>{details.Name}</h1></a>
+            <a href={details.website}><h1>{details.name}</h1></a>
             <div className="results-card-tags">
-                <a>{details.Category}</a>
-                <a>{details["Crowd Type"]}</a>
-                <a>{details.Location}</a>
+                <a href="/">{details.category}</a>
+                <a href="/">{details.location}</a>
             </div>
-            <p>{details.Description}</p>
+            <p>{details.description}</p>
         </div>
     )
 };
