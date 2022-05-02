@@ -2,19 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // Initial State
 const initialState = {
-  searchParameters: {
-    occasion: {
-      friends: false,
-      date: false
-    },
-    style: {
-      classy: false,
-      casual: false
-    },
-    ambience: {
-      lively: false,
-      intimate: false
-    },
+  searchTags: {
+    "cheap": false,
+    "fancy": false,
+    "a good date place": false,
+    "work-appropriate": false,
+    "good to bring mates": false,
+    "outdoors": false,
+    "dance-y": false,
   },
   nearMeParameters: {
     lat: -37.815338,
@@ -28,47 +23,25 @@ export const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
-    flipParameterValue: (state, action) => {
-      // Flip that parameter value
-      const { group, parameter } = action.payload;
-      state.searchParameters[group][parameter] = !state.searchParameters[group][parameter];
-        
-      // Update the other parameter value as needed
-      const groupParameters = Object.keys(state.searchParameters[action.payload.group]);
-      const otherParameter = groupParameters.filter(item => item !== parameter)[0];
-
-      if (state.searchParameters[group][otherParameter]) {
-        state.searchParameters[group][otherParameter] = false;
-      };
-
-      // Update readyToSearch as needed
-      if (
-        ( state.searchParameters.occasion.friends || state.searchParameters.occasion.date ) &&
-        ( state.searchParameters.style.classy || state.searchParameters.style.casual ) &&
-        ( state.searchParameters.ambience.lively || state.searchParameters.ambience.intimate )
-        ) {
-          state.readyToSearch = true;
-        } else {
-          state.readyToSearch = false;
-        };
+    chooseTag: (state, action) => {
+      const tag = action.payload;
+      state.searchTags[tag] = state.searchTags[tag] ? false : true; 
+      
+      const numTagsSelected = Object.values(state.searchTags).reduce((a, b) => a + b, 0)
+      state.readyToSearch = numTagsSelected >= 1 ? true : false;
     },
-
-  }
+  },
 });
 
 // Async Actions
 
 // Selectors
-const selectParamsOccasion = (state) => state.search.searchParameters.occasion;
-const selectParamsStyle = (state) => state.search.searchParameters.style;
-const selectParamsAmbience = (state) => state.search.searchParameters.ambience;
+const selectTagsStatus = (state) => state.search.searchTags;
 const selectReadyToSearch = (state) => state.search.readyToSearch;
 
 // Exports
-export const { flipParameterValue } = searchSlice.actions;
+export const { chooseTag } = searchSlice.actions;
 export { 
-  selectParamsOccasion, 
-  selectParamsStyle, 
-  selectParamsAmbience,
+  selectTagsStatus,
   selectReadyToSearch };
 export default searchSlice.reducer;

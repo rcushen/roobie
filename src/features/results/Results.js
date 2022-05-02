@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { selectResultsStatus, selectResults } from './resultsSlice';
+import { 
+    selectResultsStatus, 
+    selectResults
+    } from './resultsSlice';
 
 const Results = () => {
     const resultsStatus = useSelector(selectResultsStatus);
@@ -19,7 +22,7 @@ const Results = () => {
             <div className="results-container">
                 <div className="content-container">
                     <div className="results-header">
-                        <p>Showing venues for <em>a date</em> that are <em>classy</em> and <em>intimate</em>...</p>
+                        <p>Here are your results!</p>
                     </div>
                     <div className="results-body">
                         {results.map((record, key) => {
@@ -43,11 +46,14 @@ const Results = () => {
 const ResultCard = (props) => {
     const { details } = props;
 
+    // Helper functions
+    const dollarSigns = i => '$'.repeat(i);
+
     return (
         <div className="results-card">
             <a href={details.website}><h1>{details.name}</h1></a>
             <div className="results-card-tags">
-                <a href="/">{details.category}</a>
+                <a href="/">{dollarSigns(details.price)}</a>
                 <a href="/">{details.location}</a>
             </div>
             <p>{details.description}</p>

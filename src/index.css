@@ -105,7 +105,7 @@ button {
   color: var(--secondary);
 }
 
-.search-form, .near-me-form {
+.search-form, .search-buttons {
   margin: 10px auto;
   padding: 10px;
   width: 90%;
@@ -117,41 +117,42 @@ button {
   margin: 10px 0;
 }
 
-.search-parameter-pair {
+.tags-gallery {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
-.search-parameter-button {
-  width: 100px;
+.search-tag {
+  padding: 5px;
   height: 30px;
   color: var(--white);
   
   border: 1px solid var(--white);
   background-color: var(--primary);
+  border-radius: 15px;
 }
 
-.search-parameter-button-left {
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  border-right: none;
-}
-
-.search-parameter-button-right {
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-}
-
-.search-parameter-button:hover, .search-parameter-button-active {
+.search-tag:hover, .search-tag-selected {
   color: var(--primary);
   background: var(--white);
+}
+
+.search-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 
 .search-button {
   margin: 20px 0px;
   width: 150px;
-  height: 40px;
-  font-size: 1.25rem;
+  height: 50px;
+  font-size: 1rem;
 }
 
 .near-me-button {

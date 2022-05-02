@@ -20,6 +20,7 @@ const resultsSlice = createSlice({
             .addCase(fetchSearchResults.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.results = action.payload;
+                console.log(action.payload);
             })
             .addCase(fetchSearchResults.rejected, (state, action) => {
                 state.status = 'failed';
@@ -45,16 +46,12 @@ const fetchSearchResults = createAsyncThunk(
     async (args, thunkAPI) => {
         const state = thunkAPI.getState();
         
-        const searchParameters = state.search.searchParameters;
-        const query = {
-            occasion: searchParameters.occasion.friends ? 'friends' : 'date',
-            style: searchParameters.style.classy ? 'classy' : 'casual',
-            ambience: searchParameters.ambience.lively ? 'lively' : 'intimate'
-        };
-        const queryString = '?' + 
-            'occasion=' + query.occasion + '&' +
-            'style=' + query.style + '&' +
-            'ambience=' + query.ambience;
+        const searchParameters = state.search.searchTags;
+        
+        const tags = Object.keys(searchParameters);
+        const tagsFilter = Object.values(searchParameters);
+        const queryTags = tags.filter((tag, index) => tagsFilter[index]);
+        const queryString = '?primaryTags=' + queryTags.reduce((a, b) => a + ',' + b);
         const endpoint = '/search';
         
         const response = await fetch(endpoint + queryString);
