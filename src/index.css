@@ -182,18 +182,20 @@ button {
 /* Results Styles */
 
 .results-header {
-  height: 50px;
+  height: 60px;
   padding: 10px;
-  
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
 }
 
 .results-header p {
   text-align: center;
+  margin-bottom: 10px;
 }
+
+.results-header .results-tags-gallery {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+} 
 
 .results-header em {
   font-style: normal;

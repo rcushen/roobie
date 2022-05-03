@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { 
+import {
+    selectActiveTags
+    } from '../search/searchSlice';   
+import {
     selectResultsStatus, 
     selectResults
     } from './resultsSlice';
@@ -8,6 +11,7 @@ import {
 const Results = () => {
     const resultsStatus = useSelector(selectResultsStatus);
     const results = useSelector(selectResults);
+    const activeTags = useSelector(selectActiveTags);
 
     if (resultsStatus === 'loading') {
         return (
@@ -23,6 +27,15 @@ const Results = () => {
                 <div className="content-container">
                     <div className="results-header">
                         <p>Here are your results!</p>
+                        <div className="results-tags-gallery">
+                            {
+                                activeTags.map(tag => {
+                                    return (
+                                        <span className="search-tag-selected">{tag}</span>
+                                    )
+                                })
+                            }
+                        </div>
                     </div>
                     <div className="results-body">
                         {results.map((record, key) => {
@@ -47,12 +60,13 @@ const ResultCard = (props) => {
     const { details } = props;
 
     // Helper functions
-    const dollarSigns = i => '$'.repeat(i);
+    const dollarSigns = num => '$'.repeat(num);
 
     return (
         <div className="results-card">
             <a href={details.website}><h1>{details.name}</h1></a>
             <div className="results-card-tags">
+                <a href="/">{details.category}</a>
                 <a href="/">{dollarSigns(details.price)}</a>
                 <a href="/">{details.location}</a>
             </div>

@@ -36,12 +36,20 @@ export const searchSlice = createSlice({
 // Async Actions
 
 // Selectors
-const selectTagsStatus = (state) => state.search.searchTags;
-const selectReadyToSearch = (state) => state.search.readyToSearch;
+const selectTagsStatus = state => state.search.searchTags;
+const selectReadyToSearch = state => state.search.readyToSearch;
+const selectActiveTags = state => {
+  const searchTags = state.search.searchTags;
+  const tags = Object.keys(searchTags);
+  const tagsFilter = Object.values(searchTags);
+  const activeTags = tags.filter((tag, index) => tagsFilter[index]);
+  return activeTags
+} 
 
 // Exports
 export const { chooseTag } = searchSlice.actions;
 export { 
   selectTagsStatus,
-  selectReadyToSearch };
+  selectReadyToSearch,
+  selectActiveTags };
 export default searchSlice.reducer;

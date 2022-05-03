@@ -55,7 +55,7 @@ const Search = () => {
         <h1 className="search-hero-text">roobie</h1>
         <p className="search-hero-text">Where to next?</p>
         <div className="search-form">
-          <p>I want somewhere...</p>
+          <p>I want somewhere that is...</p>
           <div className="tags-gallery">
             {
               searchTags.map((tag, key) => {

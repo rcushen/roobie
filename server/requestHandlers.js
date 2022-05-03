@@ -1,7 +1,9 @@
 const { Pool } = require('pg');
+const format = require('pg-format');
 const _ = require('lodash');
 
-const { config } = require('../credentials/dbConfig')
+const { config } = require('../credentials/dbConfig');
+const { tagSearchString } = require('./queries.js');
 
 const pool = new Pool(config);
 
@@ -20,7 +22,7 @@ const searchHandler = (req, res) => {
     };
     // Construct the database query
     const primaryTags = searchQuery.split(',');
-    queryString = 'SELECT * FROM venues;';
+    const queryString = format(tagSearchString, primaryTags, primaryTags.length);
     // Query the database
     pool.query(queryString, (error, result) => {
         if (error) {
@@ -31,7 +33,7 @@ const searchHandler = (req, res) => {
         };
         res.status(200).send({
             primaryTags,
-            searchResults: _.sampleSize(result.rows, 8)
+            searchResults: result.rows
         });
     });
 };
