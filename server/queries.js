@@ -25,4 +25,22 @@ const tagSearchString = `
         name
 `
 
-module.exports = { tagSearchString }
+const nearMeSearchString = `
+    WITH venues_distanced AS (
+        SELECT
+            *,
+            ( 3959 * acos( cos( radians(lat) ) * cos( radians(%L) ) * cos( radians(lon) - radians(%L) ) + sin( radians(lat) ) * sin( radians(%L) ))) AS distance
+        FROM
+            venues
+    )
+    SELECT
+        *
+    FROM
+        venues_distanced
+    ORDER BY
+        distance
+    LIMIT
+        5
+`
+
+module.exports = { tagSearchString, nearMeSearchString }

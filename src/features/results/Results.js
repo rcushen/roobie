@@ -5,7 +5,8 @@ import {
     } from '../search/searchSlice';   
 import {
     selectResultsStatus, 
-    selectResults
+    selectResults,
+    selectResultType
     } from './resultsSlice';
 
 const Results = () => {
@@ -22,29 +23,54 @@ const Results = () => {
             </div>
         )
     } else if (resultsStatus === 'succeeded') {
-        return (
-            <div className="results-container">
-                <div className="content-container">
-                    <div className="results-header">
-                        <p>Here are your results!</p>
-                        <div className="results-tags-gallery">
-                            {
-                                activeTags.map(tag => {
-                                    return (
-                                        <span className="search-tag-selected">{tag}</span>
-                                    )
-                                })
-                            }
+        console.log(results.length)
+        if (results.length === 0) {
+            return (
+                <div className="results-container">
+                    <div className="content-container">
+                        <div className="results-header">
+                            <p>Here are your results!</p>
+                            <div className="results-tags-gallery">
+                                {
+                                    activeTags.map((tag, index) => {
+                                        return (
+                                            <span key={index} className="search-tag-selected">{tag}</span>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <div className="results-body">
+                            <p>No results :(</p>
                         </div>
                     </div>
-                    <div className="results-body">
-                        {results.map((record, key) => {
-                            return <ResultCard key={key} details={record} />
-                        })}
+                </div>
+            )
+        } else {
+            return (
+                <div className="results-container">
+                    <div className="content-container">
+                        <div className="results-header">
+                            <p>Here are your results!</p>
+                            <div className="results-tags-gallery">
+                                {
+                                    activeTags.map((tag, index) => {
+                                        return (
+                                            <span key={index} className="search-tag-selected">{tag}</span>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </div>
+                        <div className="results-body">
+                            {results.map((record, key) => {
+                                return <ResultCard key={key} details={record} />
+                            })}
+                        </div>
                     </div>
                 </div>
-            </div>
-        )
+            )
+        };
     } else if (resultsStatus === 'error') {
         return (
             <div className="results-container">
@@ -53,11 +79,12 @@ const Results = () => {
                 </div>
             </div>
         )
-    } 
+    }
 };
 
 const ResultCard = (props) => {
     const { details } = props;
+    const resultType = useSelector(selectResultType);
 
     // Helper functions
     const dollarSigns = num => '$'.repeat(num);
@@ -69,6 +96,7 @@ const ResultCard = (props) => {
                 <a href="/">{details.category}</a>
                 <a href="/">{dollarSigns(details.price)}</a>
                 <a href="/">{details.location}</a>
+                {resultType == 'nearMe' ? <a href="/">{details.distance.toFixed(2)} km away</a> : ''}
             </div>
             <p>{details.description}</p>
         </div>

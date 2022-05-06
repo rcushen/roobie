@@ -3,7 +3,7 @@ const format = require('pg-format');
 const _ = require('lodash');
 
 const { config } = require('../credentials/dbConfig');
-const { tagSearchString } = require('./queries.js');
+const { tagSearchString, nearMeSearchString } = require('./queries.js');
 
 const pool = new Pool(config);
 
@@ -33,7 +33,8 @@ const searchHandler = (req, res) => {
         };
         res.status(200).send({
             primaryTags,
-            searchResults: result.rows
+            results: result.rows,
+            resultType: 'search'
         });
     });
 };
@@ -52,7 +53,7 @@ const nearMeHandler = (req, res) => {
         });
     };
     // Construct the database query
-    queryString = 'SELECT * FROM venues;';
+    const queryString = format(nearMeSearchString, nearMeQuery.lat, nearMeQuery.lon, nearMeQuery.lat);
     // Query the database
     pool.query(queryString, (error, result) => {
         if (error) {
@@ -62,7 +63,8 @@ const nearMeHandler = (req, res) => {
             })
         };
         res.status(200).send({
-            nearMeResults: _.sampleSize(result.rows, 8)
+            results: result.rows,
+            resultType: 'nearMe'
         });
     });
 };

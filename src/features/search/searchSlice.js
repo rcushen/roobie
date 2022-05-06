@@ -12,8 +12,8 @@ const initialState = {
     "dance-y": false,
   },
   nearMeParameters: {
-    lat: -37.815338,
-    lon: 144.963226
+    lat: -37.815491,
+    lon: 144.969502
   },
   readyToSearch: false
 };

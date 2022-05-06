@@ -4,7 +4,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 const initialState = {
     status: 'idle',
     error: '',
-    results: []
+    results: [],
+    resultType: ''
 };
 
 // Slice
@@ -19,8 +20,8 @@ const resultsSlice = createSlice({
             })
             .addCase(fetchSearchResults.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.results = action.payload;
-                console.log(action.payload);
+                state.results = action.payload.results;
+                state.resultType = action.payload.resultType;
             })
             .addCase(fetchSearchResults.rejected, (state, action) => {
                 state.status = 'failed';
@@ -31,7 +32,9 @@ const resultsSlice = createSlice({
             })
             .addCase(fetchNearMeResults.fulfilled, (state, action) => {
                 state.status = 'succeeded';
-                state.results = action.payload;
+                state.results = action.payload.results;
+                state.resultType = action.payload.resultType;
+
             })
             .addCase(fetchNearMeResults.rejected, (state, action) => {
                 state.status = 'failed';
@@ -56,7 +59,7 @@ const fetchSearchResults = createAsyncThunk(
         
         const response = await fetch(endpoint + queryString);
         const responseJSON = await response.json();
-        return responseJSON.searchResults;
+        return responseJSON;
     }
 );
 
@@ -77,13 +80,14 @@ const fetchNearMeResults = createAsyncThunk(
 
         const response = await fetch(endpoint + queryString);
         const responseJSON = await response.json();
-        return responseJSON.nearMeResults;
+        return responseJSON;
     }
 )
 
 // Selectors
 const selectResultsStatus = state => state.results.status;
 const selectResults = state => state.results.results;
+const selectResultType = state => state.results.resultType;
 
 // Exports
 export const { populateResults } = resultsSlice.actions;
@@ -93,6 +97,7 @@ export {
 }
 export {
     selectResultsStatus,
-    selectResults
+    selectResults,
+    selectResultType
 }
 export default resultsSlice.reducer;
