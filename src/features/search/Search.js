@@ -5,7 +5,10 @@ import {
   selectTagsStatus,
   selectReadyToSearch 
 } from './searchSlice';
-import { chooseTag } from './searchSlice';
+import { 
+  chooseTag,
+  updateLocation
+} from './searchSlice';
 import { 
   fetchSearchResults,
   fetchNearMeResults
@@ -45,8 +48,16 @@ const Search = () => {
     };
   };
   const handleNearMeButtonClick = () => {
-    dispatch(fetchNearMeResults());
-    navigate('/results', { replace: true })
+    const locationSuccess = position => {
+      dispatch(updateLocation({ lat: position.coords.latitude, lon: position.coords.longitude }))
+      dispatch(fetchNearMeResults());
+      navigate('/results', { replace: true })
+
+    };
+    const locationFailure = () => {
+      alert('We need your location!')
+    }
+    navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure);
   };
 
   return (

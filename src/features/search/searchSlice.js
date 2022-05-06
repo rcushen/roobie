@@ -12,8 +12,8 @@ const initialState = {
     "dance-y": false,
   },
   nearMeParameters: {
-    lat: -37.815491,
-    lon: 144.969502
+    lat: -37,
+    lon: 144
   },
   readyToSearch: false
 };
@@ -30,6 +30,9 @@ export const searchSlice = createSlice({
       const numTagsSelected = Object.values(state.searchTags).reduce((a, b) => a + b, 0)
       state.readyToSearch = numTagsSelected >= 1 ? true : false;
     },
+    updateLocation: (state, action) => {
+      state.nearMeParameters = action.payload;
+    }
   },
 });
 
@@ -47,7 +50,10 @@ const selectActiveTags = state => {
 } 
 
 // Exports
-export const { chooseTag } = searchSlice.actions;
+export const { 
+  chooseTag,
+  updateLocation
+} = searchSlice.actions;
 export { 
   selectTagsStatus,
   selectReadyToSearch,
