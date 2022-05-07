@@ -87,13 +87,22 @@ const ResultCard = ({ record }) => {
     return (
         <div className="results-card">
             <a href={record.website}><h1>{record.name}</h1></a>
-            <div className="results-card-tags">
+            <div className="results-card-details">
                 <a href="/">{record.category}</a>
                 <a href="/">{dollarSigns(record.price)}</a>
                 <a href="/">{record.location}</a>
                 {resultType == 'nearMe' ? <a href="/">{record.distance.toFixed(2)} km away</a> : ''}
             </div>
             <p>{record.description}</p>
+            <div className="results-card-tags">
+                {
+                    record.tags.split(', ').map((tag, key) => {
+                        return (
+                            <a href='/' key={key}>{tag}</a>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 };

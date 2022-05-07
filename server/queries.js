@@ -14,13 +14,31 @@ const tagSearchString = `
             l.venue_id
         HAVING
             COUNT(l.tag_id) = %L
+    ), secondary_tags AS (
+        SELECT
+            vt.venue_id,
+            string_agg(tag, ', ') AS tags
+        FROM
+            venue_tags AS vt
+        LEFT JOIN
+            tags AS t
+        ON
+            vt.tag_id = t.tag_id
+        WHERE
+            venue_id IN (SELECT venue_id FROM relevant_venues)
+        GROUP BY
+	        venue_id
     )
     SELECT
         *
     FROM
         venues
+        LEFT JOIN
+            secondary_tags
+        ON
+            secondary_tags.venue_id = venues.venue_id
     WHERE
-        venue_id IN (SELECT venue_id FROM relevant_venues)
+        venues.venue_id IN (SELECT venue_id FROM relevant_venues)
     ORDER BY
         name
 `
@@ -32,11 +50,27 @@ const nearMeSearchString = `
             ( 3959 * acos( cos( radians(lat) ) * cos( radians(%L) ) * cos( radians(lon) - radians(%L) ) + sin( radians(lat) ) * sin( radians(%L) ))) AS distance
         FROM
             venues
+    ), secondary_tags AS (
+        SELECT
+            vt.venue_id,
+            string_agg(tag, ', ') AS tags
+        FROM
+            venue_tags AS vt
+        LEFT JOIN
+            tags AS t
+        ON
+            vt.tag_id = t.tag_id
+        GROUP BY
+	        venue_id
     )
     SELECT
         *
     FROM
         venues_distanced
+        LEFT JOIN
+            secondary_tags
+        ON
+            venues_distanced.venue_id = secondary_tags.venue_id
     ORDER BY
         distance
     LIMIT
