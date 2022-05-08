@@ -14,10 +14,10 @@ const tagSearchString = `
             l.venue_id
         HAVING
             COUNT(l.tag_id) = %L
-    ), secondary_tags AS (
+    ), primary_tags AS (
         SELECT
             vt.venue_id,
-            string_agg(tag, ', ') AS tags
+            string_agg(tag, ', ') AS primary_tags
         FROM
             venue_tags AS vt
         LEFT JOIN
@@ -25,7 +25,23 @@ const tagSearchString = `
         ON
             vt.tag_id = t.tag_id
         WHERE
-            venue_id IN (SELECT venue_id FROM relevant_venues)
+            vt.venue_id IN (SELECT venue_id FROM relevant_venues) AND
+            t.type = 'Primary'
+        GROUP BY
+	        venue_id
+    ), secondary_tags AS (
+        SELECT
+            vt.venue_id,
+            string_agg(tag, ', ') AS secondary_tags
+        FROM
+            venue_tags AS vt
+        LEFT JOIN
+            tags AS t
+        ON
+            vt.tag_id = t.tag_id
+        WHERE
+            vt.venue_id IN (SELECT venue_id FROM relevant_venues) AND
+            t.type = 'Secondary'
         GROUP BY
 	        venue_id
     )
@@ -33,6 +49,10 @@ const tagSearchString = `
         *
     FROM
         venues
+        LEFT JOIN
+            primary_tags
+        ON
+            primary_tags.venue_id = venues.venue_id
         LEFT JOIN
             secondary_tags
         ON
@@ -50,16 +70,32 @@ const nearMeSearchString = `
             ( 3959 * acos( cos( radians(lat) ) * cos( radians(%L) ) * cos( radians(lon) - radians(%L) ) + sin( radians(lat) ) * sin( radians(%L) ))) AS distance
         FROM
             venues
-    ), secondary_tags AS (
+    ), primary_tags AS (
         SELECT
             vt.venue_id,
-            string_agg(tag, ', ') AS tags
+            string_agg(tag, ', ') AS primary_tags
         FROM
             venue_tags AS vt
         LEFT JOIN
             tags AS t
         ON
             vt.tag_id = t.tag_id
+        WHERE
+            t.type = 'Primary'
+        GROUP BY
+	        venue_id
+    ), secondary_tags AS (
+        SELECT
+            vt.venue_id,
+            string_agg(tag, ', ') AS secondary_tags
+        FROM
+            venue_tags AS vt
+        LEFT JOIN
+            tags AS t
+        ON
+            vt.tag_id = t.tag_id
+        WHERE
+            t.type = 'Secondary'
         GROUP BY
 	        venue_id
     )
@@ -68,9 +104,13 @@ const nearMeSearchString = `
     FROM
         venues_distanced
         LEFT JOIN
+            primary_tags
+        ON
+            primary_tags.venue_id = venues_distanced.venue_id
+        LEFT JOIN
             secondary_tags
         ON
-            venues_distanced.venue_id = secondary_tags.venue_id
+            secondary_tags.venue_id = venues_distanced.venue_id
     ORDER BY
         distance
     LIMIT
