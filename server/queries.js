@@ -3,9 +3,9 @@ const tagSearchString = `
         SELECT
             l.venue_id
         FROM
-            tags AS t
+            data__tags AS t
             INNER JOIN
-                venue_tags AS l
+                data__venue_tags AS l
             ON t.tag_id = l.tag_id
         WHERE
             t.type = 'Primary' AND
@@ -19,9 +19,9 @@ const tagSearchString = `
             vt.venue_id,
             string_agg(tag, ', ') AS primary_tags
         FROM
-            venue_tags AS vt
+            data__venue_tags AS vt
         LEFT JOIN
-            tags AS t
+            data__tags AS t
         ON
             vt.tag_id = t.tag_id
         WHERE
@@ -34,9 +34,9 @@ const tagSearchString = `
             vt.venue_id,
             string_agg(tag, ', ') AS secondary_tags
         FROM
-            venue_tags AS vt
+            data__venue_tags AS vt
         LEFT JOIN
-            tags AS t
+            data__tags AS t
         ON
             vt.tag_id = t.tag_id
         WHERE
@@ -48,17 +48,17 @@ const tagSearchString = `
     SELECT
         *
     FROM
-        venues
+        data__venues AS v
         LEFT JOIN
             primary_tags
         ON
-            primary_tags.venue_id = venues.venue_id
+            primary_tags.venue_id = v.venue_id
         LEFT JOIN
             secondary_tags
         ON
-            secondary_tags.venue_id = venues.venue_id
+            secondary_tags.venue_id = v.venue_id
     WHERE
-        venues.venue_id IN (SELECT venue_id FROM relevant_venues)
+        v.venue_id IN (SELECT venue_id FROM relevant_venues)
     ORDER BY
         name
 `
@@ -69,15 +69,15 @@ const nearMeSearchString = `
             *,
             ( 3959 * acos( cos( radians(lat) ) * cos( radians(%L) ) * cos( radians(lon) - radians(%L) ) + sin( radians(lat) ) * sin( radians(%L) ))) AS distance
         FROM
-            venues
+            data__venues
     ), primary_tags AS (
         SELECT
             vt.venue_id,
             string_agg(tag, ', ') AS primary_tags
         FROM
-            venue_tags AS vt
+            data__venue_tags AS vt
         LEFT JOIN
-            tags AS t
+            data__tags AS t
         ON
             vt.tag_id = t.tag_id
         WHERE
@@ -89,9 +89,9 @@ const nearMeSearchString = `
             vt.venue_id,
             string_agg(tag, ', ') AS secondary_tags
         FROM
-            venue_tags AS vt
+            data__venue_tags AS vt
         LEFT JOIN
-            tags AS t
+            data__tags AS t
         ON
             vt.tag_id = t.tag_id
         WHERE
@@ -102,15 +102,15 @@ const nearMeSearchString = `
     SELECT
         *
     FROM
-        venues_distanced
+        venues_distanced AS vd
         LEFT JOIN
             primary_tags
         ON
-            primary_tags.venue_id = venues_distanced.venue_id
+            primary_tags.venue_id = vd.venue_id
         LEFT JOIN
             secondary_tags
         ON
-            secondary_tags.venue_id = venues_distanced.venue_id
+            secondary_tags.venue_id = vd.venue_id
     ORDER BY
         distance
     LIMIT

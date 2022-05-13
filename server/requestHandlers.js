@@ -3,7 +3,8 @@ const format = require('pg-format');
 const _ = require('lodash');
 
 const { config } = require('../credentials/dbConfig');
-const { tagSearchString, nearMeSearchString } = require('./queries.js');
+const { tagSearchString, nearMeSearchString } = require('./queries');
+const { logQuery } = require('./loggers');
 
 const pool = new Pool(config);
 
@@ -36,6 +37,8 @@ const searchHandler = (req, res) => {
             results: result.rows,
             resultType: 'search'
         });
+        // Log the query
+        logQuery('search', { searchQuery }, pool);
     });
 };
 
@@ -66,6 +69,8 @@ const nearMeHandler = (req, res) => {
             results: result.rows,
             resultType: 'nearMe'
         });
+        // Log the query
+        logQuery('nearMe', { lat: nearMeQuery.lat, lon: nearMeQuery.lon }, pool);
     });
 };
 
