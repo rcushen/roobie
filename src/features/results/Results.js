@@ -1,4 +1,6 @@
+import { useEffect, useInsertionEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import {
     selectActiveTags
@@ -10,10 +12,16 @@ import {
     } from './resultsSlice';
 
 const Results = () => {
+    const navigate = useNavigate();
     const resultsStatus = useSelector(selectResultsStatus);
+    
+    useEffect(() => {
+        if (resultsStatus === 'idle') {
+            navigate('/', { replace: true });
+        };
+    });
+
     switch (resultsStatus) {
-        case 'idle':
-            return <ResultsIdle />
         case 'loading':
             return <ResultsLoading />
         case 'succeeded':
@@ -22,16 +30,8 @@ const Results = () => {
             return <ResultsError />
         default:
             return <ResultsError />
-    }
+    };
 };
-
-const ResultsIdle = () => {
-    return (
-        <div className="content-container">
-            <h1><a href='/'>Click here to search again!</a></h1>
-        </div>
-    )
-}
 
 const ResultsLoading = () => {
     return (
