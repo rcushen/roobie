@@ -5,14 +5,54 @@ const initialState = {
     status: 'idle',
     error: '',
     results: [],
-    resultType: ''
+    resultsFiltered: [],
+    resultType: '',
+    secondaryTagFilters: {
+        "tiny": "not selected",
+        "raucous": "not selected",
+        "iconic": "not selected",
+        "rooftop": "not selected",
+        "killer cocktails": "not selected"
+    }
 };
 
 // Slice
 const resultsSlice = createSlice({
     name: 'results',
     initialState,
-    reducers: {},
+    reducers: {
+        flipSecondaryTagFilter: (state, action) => {
+            const tag = action.payload;
+            state.secondaryTagFilters[tag] = state.secondaryTagFilters[tag] === "selected" ? "not selected" : "selected";
+        },
+        filterResults: (state, action) => {
+            const secondaryTagFiltersMask = Object.values(state.secondaryTagFilters).map(item => item === "selected" ? true : false);
+            const selectedSecondaryTagFilters = Object.keys(state.secondaryTagFilters).filter((tag, index) => {
+                return secondaryTagFiltersMask[index]
+            });
+            state.resultsFiltered = state.results.filter(
+                result => {
+                    const includedTags = new Array(selectedSecondaryTagFilters.length);
+                    for (let i = 0; i < selectedSecondaryTagFilters.length; i++) {
+                        if (result.secondary_tags.includes(selectedSecondaryTagFilters[i])) {
+                            includedTags[i] = true;
+                        } else {
+                            includedTags[i] = false;
+                        };
+                    };
+                    if (includedTags.every(t => t === true)) {
+                        return true;
+                    } else {
+                        return false;
+                    };
+                }
+            );
+        },
+        clearFilters: (state, action) => {
+            state.secondaryTagFilters = initialState.secondaryTagFilters;
+            state.resultsFiltered = state.results;
+        }
+    },
     extraReducers(builder) {
         builder
             .addCase(fetchSearchResults.pending, (state, action) => {
@@ -21,6 +61,7 @@ const resultsSlice = createSlice({
             .addCase(fetchSearchResults.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.results = action.payload.results;
+                state.resultsFiltered = action.payload.results;
                 state.resultType = action.payload.resultType;
             })
             .addCase(fetchSearchResults.rejected, (state, action) => {
@@ -33,6 +74,7 @@ const resultsSlice = createSlice({
             .addCase(fetchNearMeResults.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.results = action.payload.results;
+                state.resultsFiltered = action.payload.results;
                 state.resultType = action.payload.resultType;
 
             })
@@ -86,18 +128,24 @@ const fetchNearMeResults = createAsyncThunk(
 
 // Selectors
 const selectResultsStatus = state => state.results.status;
-const selectResults = state => state.results.results;
+const selectResultsFiltered = state => state.results.resultsFiltered;
 const selectResultType = state => state.results.resultType;
+const selectSecondaryTagFilters = state => state.results.secondaryTagFilters;
 
 // Exports
-export const { populateResults } = resultsSlice.actions;
+export const { 
+    flipSecondaryTagFilter,
+    filterResults,
+    clearFilters
+} = resultsSlice.actions;
 export {
     fetchSearchResults,
     fetchNearMeResults
 }
 export {
     selectResultsStatus,
-    selectResults,
-    selectResultType
+    selectResultsFiltered,
+    selectResultType,
+    selectSecondaryTagFilters
 }
 export default resultsSlice.reducer;

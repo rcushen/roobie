@@ -1,14 +1,20 @@
-import { useEffect, useInsertionEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import {
+    flipSecondaryTagFilter,
+    filterResults,
+    clearFilters
+    } from './resultsSlice';
 import {
     selectActiveTags
     } from '../search/searchSlice';   
 import {
+    selectResultsFiltered,
     selectResultsStatus, 
-    selectResults,
-    selectResultType
+    selectResultType,
+    selectSecondaryTagFilters
     } from './resultsSlice';
 
 const Results = () => {
@@ -42,7 +48,7 @@ const ResultsLoading = () => {
 };
 
 const ResultsSuccess = () => {
-    const results = useSelector(selectResults);
+    const results = useSelector(selectResultsFiltered);
     const resultType = useSelector(selectResultType);
     const activeTags = useSelector(selectActiveTags);
 
@@ -65,13 +71,18 @@ const ResultsSuccess = () => {
                 }
             </div>
             <div className="results-body">
-                {
-                    results.map((record, key) => {
-                        return ( 
-                            <ResultCard key={key} record={record} />
-                        )
-                    })
-                }
+                <div className="results-sidebar">
+                    <ResultsFilters />
+                </div>
+                <div className="results-content">
+                    {
+                        results.map((record, key) => {
+                            return ( 
+                                <ResultCard key={key} record={record} />
+                            )
+                        })
+                    }
+                </div>
             </div>
         </div>
     )
@@ -119,6 +130,77 @@ const ResultCard = ({ record }) => {
                     })
                 }
             </div>
+        </div>
+    )
+};
+
+const ResultsFilters = () => {
+    const dispatch = useDispatch();
+
+    // Define constants
+    const secondaryTagFiltersState = useSelector(selectSecondaryTagFilters);
+    const secondaryTagFilters = Object.keys(secondaryTagFiltersState);
+
+    // Define helper functions
+    const getSecondaryTagFilterClass = tag => {
+        const filterTagState = secondaryTagFiltersState[tag];
+        if (filterTagState === 'selected') {
+            return "secondary-filter-tag secondary-filter-tag-selected";
+        } else {
+            return "secondary-filter-tag";
+        };
+    };
+
+    const getSecondaryFiltersButtonClass = () => {
+        const secondaryFiltersApplied = Object.values(secondaryTagFiltersState).includes('selected');
+        if (secondaryFiltersApplied) {
+            return "secondary-filters-button secondary-filters-button-ready";
+        } else {
+            return "secondary-filters-button";
+        }
+    }
+
+    const handleSecondaryTagFilterClick = tag => {
+        dispatch(flipSecondaryTagFilter(tag));
+    };
+
+    const handleSecondaryFiltersButtonClick = () => {
+        dispatch(filterResults());
+    };
+
+    const handleClearSecondaryFiltersClick = () => {
+        dispatch(clearFilters());
+    };
+
+    return (
+        <div className="results-filters">
+            <h1>More Filters</h1>
+            <div className="filters-gallery">
+                {
+                    secondaryTagFilters.map((tag, index) => {
+                        return (
+                            <button key={tag}
+                            className={getSecondaryTagFilterClass(tag)}
+                            onClick={() => handleSecondaryTagFilterClick(tag)}
+                            >
+                                {tag}
+                            </button>
+                        )
+                    })
+                }
+            </div>
+            <button
+            className={getSecondaryFiltersButtonClass()}
+            onClick={handleSecondaryFiltersButtonClick}
+            >
+                Apply Filters
+            </button>
+            <button
+            className="clear-secondary-filters-button"
+            onClick={handleClearSecondaryFiltersClick}
+            >
+                Clear All Filters
+            </button>
         </div>
     )
 };

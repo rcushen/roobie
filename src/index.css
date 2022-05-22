@@ -204,6 +204,61 @@ button {
 }
 
 .results-body {
+  display: flex;
+}
+
+.results-sidebar {
+  width: 20%;
+}
+
+.results-filters {
+  border: 1px solid var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.filters-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 3px;
+}
+
+.secondary-filter-tag {
+  padding: 3px;
+  background-color: var(--primary);
+  color: var(--white);
+  border: 1px solid var(--white);
+  border-radius: 5px;
+}
+
+.secondary-filter-tag:hover, .secondary-filter-tag-selected {
+  background-color: var(--white);
+  color: var(--primary);
+}
+
+.secondary-filters-button {
+  width: 80%;
+  height: 20px;
+  background-color: var(--primary);
+  color: var(--secondary);
+  border: 1px solid var(--secondary);
+}
+
+.secondary-filters-button-ready {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+.clear-secondary-filters-button {
+  width: 50%;
+}
+
+.results-content {
+  width: 80%;
   padding: 10px 10px 50px;
 
   display: grid;
