@@ -159,10 +159,6 @@ em {
   color: var(--primary);
 }
 
-.search-city-option-selected span {
-  background-color: var(--contrast);
-}
-
 .search-city-option-notyet {
   text-decoration: line-through;
 }

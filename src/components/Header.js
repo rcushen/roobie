@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Header = ({landing}) => {
     
     return (
@@ -5,11 +7,11 @@ const Header = ({landing}) => {
             <div className="content-container">
                 <div className="header">
                     <div className="header-nav header-nav-left">
-                        <a href="/"><p>About</p></a>
+                        <p><Link to="/about">About</Link></p>
                     </div>
                     { landing === true ? "" : <div className="header-logo"><a href="/"><h3>roobie</h3></a></div> }
                     <div className="header-nav header-nav-right">
-                        <p><a href="/">Contact Us</a></p>
+                        <p><Link to="/contactus">Contact Us</Link></p>
                     </div>
                 </div>
             </div>
