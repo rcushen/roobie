@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 // Initial State
 const initialState = {
+  searchCity: "Melbourne",
+  searchCityOpen: false,
   searchTags: {
     "cheap": false,
     "fancy": false,
@@ -24,6 +26,12 @@ export const searchSlice = createSlice({
   name: 'search',
   initialState,
   reducers: {
+    flipSearchCityDropdown: (state, action) => {
+      state.searchCityOpen = state.searchCityOpen ? false : true;
+    },
+    changeSearchCity: (state, action) => {
+      state.searchCity = action.payload;
+    },
     chooseSearchType: (state, action) => {
       if (action.payload === "Vibe") {
         state.searchType = "Vibe";
@@ -52,6 +60,8 @@ export const searchSlice = createSlice({
 // Async Actions
 
 // Selectors
+const selectSearchCity = state => state.search.searchCity;
+const selectSearchCityOpen = state => state.search.searchCityOpen;
 const selectSearchType = state => state.search.searchType;
 const selectTagsStatus = state => state.search.searchTags;
 const selectReadyToSearch = state => state.search.readyToSearch;
@@ -64,12 +74,16 @@ const selectActiveTags = state => {
 } 
 
 // Exports
-export const { 
+export const {
+  flipSearchCityDropdown,
+  changeSearchCity,
   chooseSearchType,
   chooseTag,
   updateLocation
 } = searchSlice.actions;
-export { 
+export {
+  selectSearchCity,
+  selectSearchCityOpen,
   selectSearchType,
   selectTagsStatus,
   selectReadyToSearch,

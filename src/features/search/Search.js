@@ -1,12 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { 
+import {
+  selectSearchCity,
+  selectSearchCityOpen,
   selectSearchType,
   selectTagsStatus,
   selectReadyToSearch 
 } from './searchSlice';
 import { 
+  flipSearchCityDropdown,
+  changeSearchCity,
   chooseSearchType,
   chooseTag,
   updateLocation
@@ -19,6 +23,86 @@ import {
 import downArrow from './../../assets/general_icons/down_arrow.svg'
 
 const Search = () => {
+  return (
+    <div className="search-container">
+      <div className="search-body">
+        <h1 className="search-hero">roobie</h1>
+        <SearchCity />
+        <SearchPrompt />
+        <SearchForm />
+      </div>
+    </div>
+  )
+};
+
+const SearchCity = () => {
+  const dispatch = useDispatch();
+
+  const searchCity = useSelector(selectSearchCity);
+  const searchCityOpen = useSelector(selectSearchCityOpen);
+
+  // Helper functions
+  const handleSearchCityButtonClick = () => {
+    dispatch(flipSearchCityDropdown());
+  };
+  const handleSearchCityOptionClick = city => {
+    dispatch(changeSearchCity(city));
+    dispatch(flipSearchCityDropdown());
+  }
+  const handleOverlayClick = () => {
+    dispatch(flipSearchCityDropdown());
+  };
+
+  if (searchCityOpen) {
+    return (
+      <div className="search-city">
+        <div className="search-city-dropdown-open">
+          <div className="search-cities-gallery">
+            <button
+              className="search-city-option search-city-option-selected"
+              onClick={() => handleSearchCityOptionClick("Melbourne")}
+            >
+              <span>roobie MELBOURNE</span>
+            </button>
+            <button
+              className="search-city-option search-city-option-notyet"
+              // onClick={() => handleSearchCityOptionClick("Sydney")}
+            >
+              roobie SYDNEY*
+            </button>
+            <button
+              className="search-city-option search-city-option-notyet"
+              // onClick={() => handleSearchCityOptionClick("Brisbane")}
+            >
+              roobie BRISBANE*
+            </button>
+          </div>
+          <p>*Coming soon!</p>
+        </div>
+        <div 
+          className="overlay"
+          onClick={handleOverlayClick}
+        >
+        </div>
+      </div>
+    )
+  } else {
+    return (
+      <div className="search-city">
+        <div className="search-city-dropdown-closed">
+          <button
+            className="search-city-button"
+            onClick={handleSearchCityButtonClick}
+          >
+            {searchCity} <img className="search-city-down-arrow" src={downArrow} />
+          </button>
+        </div>
+      </div>
+    )
+  };
+};
+
+const SearchPrompt = () => {
   // Constants
   const possibleSearchPrompts = [
     'Where to next?',
@@ -35,20 +119,11 @@ const Search = () => {
   };
 
   return (
-    <div className="search-container">
-      <div className="search-body">
-        <h1 className="search-hero">roobie</h1>
-        <div className="search-city">
-          <p>Melbourne</p> <img className="search-city-down-arrow" src={downArrow} />
-        </div>
-        <div className="search-prompt">
-          <p>{selectSearchPrompt(possibleSearchPrompts)}</p>
-        </div>
-        <SearchForm />
-      </div>
+    <div className="search-prompt">
+      <p>{selectSearchPrompt(possibleSearchPrompts)}</p>
     </div>
   )
-};
+}
 
 const SearchForm = () => {
   const dispatch = useDispatch();

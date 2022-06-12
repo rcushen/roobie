@@ -117,19 +117,74 @@ em {
 
 .search-city {
   height: 30px;
+  padding-bottom: 10px;
+}
+
+.search-city-button {
   color: var(--primary);
   text-transform: uppercase;
-  padding-bottom: 10px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
+  background-color: var(--background);
+  margin: auto;
+  display: block;
 }
 
 .search-city-down-arrow {
   width: 10px;
   height: 10px;
+}
+
+.search-city-dropdown-open {
+  position: relative;
+  margin: auto;
+  top: -10px;
+  z-index: 1;
+  width: 200px;
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  background-color: var(--background);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.search-cities-gallery {
+  height: 100%;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  gap: 10px;
+}
+
+.search-city-option {
+  background-color: var(--background);
+  color: var(--primary);
+}
+
+.search-city-option-selected span {
+  background-color: var(--contrast);
+}
+
+.search-city-option-notyet {
+  text-decoration: line-through;
+}
+
+.search-city-dropdown-open p {
+  color: var(--primary);
+  font-size: 0.75rem;
+  text-align: center;
+  padding: 0px 10px 10px;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%; 
+  height:100%;
+  top:0; 
+  left:0;
+  background:rgba(0,0,0,0.5);
+  opacity: 1;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
 }
 
 .search-prompt {
@@ -261,7 +316,7 @@ em {
   margin: 20px 0px;
   width: 150px;
   height: 40px;
-  font-size: 0.875rem;
+  font-size: 1rem;
   text-transform: uppercase;
   border: 1px solid var(--primary);
 }
