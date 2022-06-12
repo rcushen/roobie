@@ -2,10 +2,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { 
+  selectSearchType,
   selectTagsStatus,
   selectReadyToSearch 
 } from './searchSlice';
 import { 
+  chooseSearchType,
   chooseTag,
   updateLocation
 } from './searchSlice';
@@ -14,89 +16,167 @@ import {
   fetchNearMeResults
 } from '../results/resultsSlice';
 
+import downArrow from './../../assets/general_icons/down_arrow.svg'
+
 const Search = () => {
+  // Constants
+  const possibleSearchPrompts = [
+    'Where to next?',
+    'Funny joke about bars',
+    'More funnies',
+    'Jokes go here',
+    'Ha ha funny funny line',
+    'He he he hoo hoo ha ha ha'
+  ];
+
+  // Helper functions
+  const selectSearchPrompt = possibleSearchPrompts => {
+    return possibleSearchPrompts[Math.floor(Math.random() * possibleSearchPrompts.length)];
+  };
+
+  return (
+    <div className="search-container">
+      <div className="search-body">
+        <h1 className="search-hero">roobie</h1>
+        <div className="search-city">
+          <p>Melbourne</p> <img className="search-city-down-arrow" src={downArrow} />
+        </div>
+        <div className="search-prompt">
+          <p>{selectSearchPrompt(possibleSearchPrompts)}</p>
+        </div>
+        <SearchForm />
+      </div>
+    </div>
+  )
+};
+
+const SearchForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const searchType = useSelector(selectSearchType);
   const readyToSearch = useSelector(selectReadyToSearch);
+
+  // Helper functions
+  const setSearchButtonClasses = readyToSearch => {
+    return "search-button" + (readyToSearch ? " search-button-ready" : " search-button-notready")
+  };
+  const setSearchTypeButtonClasses = which => {
+    return "search-type" + (searchType === which ? " search-type-selected" : " search-type-notselected")
+  }
+
+  // Handler functions
+  const handleSearchButtonClick = () => {
+    if (readyToSearch && searchType === "Vibe") {
+      dispatch(fetchSearchResults());
+      navigate('/results', { replace: true })
+    } else if (readyToSearch && searchType === "Location") {
+      const locationSuccess = position => {
+        dispatch(updateLocation({ lat: position.coords.latitude, lon: position.coords.longitude }))
+        dispatch(fetchNearMeResults());
+        navigate('/results', { replace: true })
+      };
+      const locationFailure = () => {
+        alert('We need your location!')
+      };
+      navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure);
+    };
+  };
+
+  return (
+    <div className="search-form">
+      <div className="search-form-header">
+        <button 
+          className={setSearchTypeButtonClasses("Vibe") + " search-type-left"}
+          onClick={() => { dispatch(chooseSearchType("Vibe")) }}
+        >
+          Vibe
+        </button>
+        <button
+          className={setSearchTypeButtonClasses("Location") + " search-type-right"}
+          onClick={() => { dispatch(chooseSearchType("Location")) }}
+        >
+          Location
+        </button>
+      </div>
+      {searchType === "Vibe" ? <VibeSearch /> : <LocationSearch /> }
+      <div className="search-button-container">
+        <button
+          className={setSearchButtonClasses(readyToSearch)}
+          onClick={handleSearchButtonClick}
+        >
+          Find Venues
+        </button>
+      </div>
+    </div>
+  )
+}
+
+const VibeSearch = () => {
+  const dispatch = useDispatch();
+
   const tagsStatus = useSelector(selectTagsStatus);
 
   // Constants
   const searchTags = [
     "cheap",
-    "fancy",
     "a good date place",
-    "work-appropriate",
     "good to bring mates",
+    "fancy",
+    "work-appropriate",
     "outdoors",
     "dance-y",
   ];
 
   // Helper functions
   const setTagButtonClasses = tagSelected => {
-    return "search-tag" + (tagsStatus[tagSelected] ? " search-tag-selected" : "")
+    return "search-tag" + (tagsStatus[tagSelected] ? " search-tag-selected" : " search-tag-notselected")
   }
-  const setSearchButtonClasses = readyToSearch => {
-    return "search-button" + (readyToSearch ? " search-button-ready" : " search-button-notready")
-  };
 
-  // Handler functions
-  const handleSearchButtonClick = () => {
-    if (readyToSearch) {
-      dispatch(fetchSearchResults());
-      navigate('/results', { replace: true })
-    };
-  };
-  const handleNearMeButtonClick = () => {
-    const locationSuccess = position => {
-      dispatch(updateLocation({ lat: position.coords.latitude, lon: position.coords.longitude }))
-      dispatch(fetchNearMeResults());
-      navigate('/results', { replace: true })
+  const generateSearchString = tagsStatus => {
+    const activeTags = Object.keys(tagsStatus).filter((element, index) => Object.values(tagsStatus)[index]);
 
-    };
-    const locationFailure = () => {
-      alert('We need your location!')
+    if (activeTags.length === 0) {
+      return "<p>Find a bar or pub that is...</p>"
+    } else {
+      let searchString = activeTags.reduce((previousValue, currentValue) => {
+        return previousValue + ` <em>${currentValue}</em> and`
+      }, "")
+      searchString = "<p>Find a bar or pub that is " + searchString + "...</p>";
+      return searchString;
     }
-    navigator.geolocation.getCurrentPosition(locationSuccess, locationFailure);
   };
 
   return (
-    <div className="search-container">
-      <div className="search-hero">
-        <h1 className="search-hero-text">roobie</h1>
-        <p className="search-hero-text">Where to next?</p>
-        <div className="search-form">
-          <p>I want somewhere that is...</p>
-          <div className="tags-gallery">
-            {
-              searchTags.map((tag, key) => {
-              return (
-                <button
-                  key={key}
-                  className={setTagButtonClasses(tag)}
-                  onClick={() => { dispatch(chooseTag(tag)) }}
-                >{tag}
-                </button>
-              )
-            })
-          }
-          </div>
-        </div>
-        <div className="search-buttons">
-          <button
-            className={setSearchButtonClasses(readyToSearch)}
-            onClick={handleSearchButtonClick}>
-            Search
-          </button>
-          <button
-            className="near-me-button"
-            onClick={handleNearMeButtonClick}>
-            Just show me somewhere near
-          </button>
-        </div>
+    <div className="search-type-container">
+      <div className="search-string" dangerouslySetInnerHTML={{__html: generateSearchString(tagsStatus)}}>
+      </div>
+      <div className="tags-gallery">
+        {
+          searchTags.map((tag, key) => {
+          return (
+            <button
+              key={key}
+              className={setTagButtonClasses(tag)}
+              onClick={() => { dispatch(chooseTag(tag)) }}
+            >{tag}
+            </button>
+          )
+        })
+      }
       </div>
     </div>
   )
-};
+}
+
+const LocationSearch = () => {
+  return (
+    <div className="search-type-container">
+      <div className="search-string search-string-location">
+        <p>Find a bar or pub that is <em>near me!</em></p>
+      </div>
+  </div>
+  )
+}
 
 export default Search;

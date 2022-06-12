@@ -7,13 +7,8 @@ const initialState = {
     results: [],
     resultsFiltered: [],
     resultType: '',
-    secondaryTagFilters: {
-        "tiny": "not selected",
-        "raucous": "not selected",
-        "iconic": "not selected",
-        "rooftop": "not selected",
-        "killer cocktails": "not selected"
-    }
+    secondaryTagFiltersOpen: false,
+    secondaryTagFilters: {}
 };
 
 // Slice
@@ -21,6 +16,9 @@ const resultsSlice = createSlice({
     name: 'results',
     initialState,
     reducers: {
+        flipSecondaryTagFiltersPane: (state, action) => {
+            state.secondaryTagFiltersOpen = state.secondaryTagFiltersOpen ? false : true;
+        },
         flipSecondaryTagFilter: (state, action) => {
             const tag = action.payload;
             state.secondaryTagFilters[tag] = state.secondaryTagFilters[tag] === "selected" ? "not selected" : "selected";
@@ -49,7 +47,7 @@ const resultsSlice = createSlice({
             );
         },
         clearFilters: (state, action) => {
-            state.secondaryTagFilters = initialState.secondaryTagFilters;
+            state.secondaryTagFilters = Object.keys(state.secondaryTagFilters).reduce((a, v) => ({ ...a, [v]: "not selected"}), {});;
             state.resultsFiltered = state.results;
         }
     },
@@ -63,6 +61,14 @@ const resultsSlice = createSlice({
                 state.results = action.payload.results;
                 state.resultsFiltered = action.payload.results;
                 state.resultType = action.payload.resultType;
+
+                const secondaryTags = action.payload.results.reduce((previousValue, currentRecord) => {
+                    return previousValue + ", " + currentRecord.secondary_tags;
+                }, "").split(', ').slice(1);
+                const uniqueSecondaryTags = [...new Set(secondaryTags)];
+                const secondaryTagFilters = uniqueSecondaryTags.reduce((a, v) => ({ ...a, [v]: "not selected"}), {});
+
+                state.secondaryTagFilters = secondaryTagFilters;
             })
             .addCase(fetchSearchResults.rejected, (state, action) => {
                 state.status = 'failed';
@@ -130,10 +136,12 @@ const fetchNearMeResults = createAsyncThunk(
 const selectResultsStatus = state => state.results.status;
 const selectResultsFiltered = state => state.results.resultsFiltered;
 const selectResultType = state => state.results.resultType;
+const selectSecondaryTagFiltersOpen = state => state.results.secondaryTagFiltersOpen;
 const selectSecondaryTagFilters = state => state.results.secondaryTagFilters;
 
 // Exports
 export const { 
+    flipSecondaryTagFiltersPane,
     flipSecondaryTagFilter,
     filterResults,
     clearFilters
@@ -146,6 +154,7 @@ export {
     selectResultsStatus,
     selectResultsFiltered,
     selectResultType,
+    selectSecondaryTagFiltersOpen,
     selectSecondaryTagFilters
 }
 export default resultsSlice.reducer;

@@ -5,7 +5,7 @@ import Footer from '../features/footer/Footer';
 const LandingPage = () => {
     return (
         <div className="landing-page-container">
-            <Header />
+            <Header landing={true}/>
             <Search />
             <Footer />
         </div>

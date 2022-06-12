@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import {
+    flipSecondaryTagFiltersPane,
     flipSecondaryTagFilter,
     filterResults,
     clearFilters
@@ -14,8 +15,12 @@ import {
     selectResultsFiltered,
     selectResultsStatus, 
     selectResultType,
+    selectSecondaryTagFiltersOpen,
     selectSecondaryTagFilters
     } from './resultsSlice';
+
+import downArrow from './../../assets/general_icons/down_arrow.svg'
+import image from './../../assets/images/photo1.jpeg'
 
 const Results = () => {
     const navigate = useNavigate();
@@ -42,38 +47,41 @@ const Results = () => {
 const ResultsLoading = () => {
     return (
         <div className="content-container">
-            <h1>Loading...</h1>
+        </div>
+    )
+};
+
+const ResultsError = () => {
+    return (
+        <div className="content-container">
+            <div className="results-error">
+                <h3>Oh no! A bug!</h3>
+                <p>We are working on fixing this as soon as possible. If you would like, you can <a>contact us here</a> to give us more details.</p>
+            </div>
         </div>
     )
 };
 
 const ResultsSuccess = () => {
     const results = useSelector(selectResultsFiltered);
-    const resultType = useSelector(selectResultType);
     const activeTags = useSelector(selectActiveTags);
+
+    // Helper functions
+    const generateResultsString = activeTags => {
+        let resultsString = activeTags.reduce((previousValue, currentValue) => {
+            return previousValue + ` <em>${currentValue}</em> and`
+        }, "")
+        resultsString = "<p>Showing venues that are " + resultsString.substring(0, resultsString.length - 4) + "</p>";
+        return resultsString;
+    }
 
     return (
         <div className="content-container">
             <div className="results-header">
-                <p>Here are your results!</p>
-                {   
-                    resultType === 'search' ?
-                    <div className="results-tags-gallery">
-                        {
-                            activeTags.map((tag, key) => {
-                                return (
-                                    <span key={key} className="search-tag-selected">{tag}</span>
-                                )
-                            })
-                        }
-                    </div>
-                    : ''
-                }
+                <div className="results-string" dangerouslySetInnerHTML={{__html: generateResultsString(activeTags)}}></div>
+                <ResultsFilters />
             </div>
             <div className="results-body">
-                <div className="results-sidebar">
-                    <ResultsFilters />
-                </div>
                 <div className="results-content">
                     {
                         results.map((record, key) => {
@@ -88,56 +96,11 @@ const ResultsSuccess = () => {
     )
 };
 
-const ResultsError = () => {
-    return (
-        <div className="content-container">
-            <h1>Oh no! Error...</h1>
-        </div>
-    )
-};
-
-const ResultCard = ({ record }) => {
-    const resultType = useSelector(selectResultType);
-
-    // Helper functions
-    const dollarSigns = num => '$'.repeat(num);
-
-    return (
-        <div className="results-card">
-            <a href={record.website}><h1>{record.name}</h1></a>
-            <div className="results-card-details">
-                <a href="/">{record.category}</a>
-                <a href="/">{dollarSigns(record.price)}</a>
-                <a href="/">{record.location}</a>
-                {resultType === 'nearMe' ? <a href="/">{record.distance.toFixed(2)} km away</a> : ''}
-            </div>
-            <p>{record.description}</p>
-            <div className="results-card-primary-tags">
-                {
-                    record.primary_tags.split(', ').map((tag, key) => {
-                        return (
-                            <a href='/' key={key}>{tag}</a>
-                        )
-                    })
-                }
-            </div>
-            <div className="results-card-secondary-tags">
-                {
-                    record.secondary_tags.split(', ').map((tag, key) => {
-                        return (
-                            <a href='/' key={key}>{tag}</a>
-                        )
-                    })
-                }
-            </div>
-        </div>
-    )
-};
-
 const ResultsFilters = () => {
     const dispatch = useDispatch();
-
+    
     // Define constants
+    const secondaryTagFiltersOpen = useSelector(selectSecondaryTagFiltersOpen);
     const secondaryTagFiltersState = useSelector(selectSecondaryTagFilters);
     const secondaryTagFilters = Object.keys(secondaryTagFiltersState);
 
@@ -147,7 +110,7 @@ const ResultsFilters = () => {
         if (filterTagState === 'selected') {
             return "secondary-filter-tag secondary-filter-tag-selected";
         } else {
-            return "secondary-filter-tag";
+            return "secondary-filter-tag secondary-filter-tag-notselected";
         };
     };
 
@@ -156,9 +119,13 @@ const ResultsFilters = () => {
         if (secondaryFiltersApplied) {
             return "secondary-filters-button secondary-filters-button-ready";
         } else {
-            return "secondary-filters-button";
+            return "secondary-filters-button secondary-filters-button-notready";
         }
     }
+
+    const handleDropdownButtonClick = () => {
+        dispatch(flipSecondaryTagFiltersPane())
+    };
 
     const handleSecondaryTagFilterClick = tag => {
         dispatch(flipSecondaryTagFilter(tag));
@@ -172,35 +139,103 @@ const ResultsFilters = () => {
         dispatch(clearFilters());
     };
 
+    if (secondaryTagFiltersOpen) {
+        return (
+            <div className="results-filters">
+                <div className="results-filters-dropdown">
+                    <button
+                    className="results-filters-dropdown-button"
+                    onClick={handleDropdownButtonClick}
+                    >
+                        Hide Filters
+                        <img className="search-city-down-arrow" src={downArrow} />
+                    </button>
+                </div>
+                <div className="filters-form">
+                    <div className="filters-gallery">
+                        {
+                            secondaryTagFilters.map((tag, index) => {
+                                return (
+                                    <button key={tag}
+                                    className={getSecondaryTagFilterClass(tag)}
+                                    onClick={() => handleSecondaryTagFilterClick(tag)}
+                                    >
+                                        {tag}
+                                    </button>
+                                )
+                            })
+                        }
+                    </div>
+                    <div className="filters-buttons">
+                        <button
+                        className={getSecondaryFiltersButtonClass()}
+                        onClick={handleSecondaryFiltersButtonClick}
+                        >
+                            Apply Filters
+                        </button>
+                        <button
+                        className="clear-secondary-filters-button"
+                        onClick={handleClearSecondaryFiltersClick}
+                        >
+                            (or clear all filters)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    } else {
+        return (
+            <div className="results-filters">
+                <div className="results-filters-dropdown">
+                    <button
+                    className="results-filters-dropdown-button"
+                    onClick={handleDropdownButtonClick}
+                    >
+                        More Filters
+                        <img className="search-city-down-arrow" src={downArrow} />
+                    </button>
+                </div>
+            </div>
+        )
+    };
+}
+
+const ResultCard = ({ record }) => {
+    const resultType = useSelector(selectResultType);
+
+    // Helper functions
+    const dollarSigns = num => '$'.repeat(num);
+    const dollarSignsPad = num => '$'.repeat(3 - num);
+
     return (
-        <div className="results-filters">
-            <h1>More Filters</h1>
-            <div className="filters-gallery">
+        <div className="results-card">
+            <div className="results-card-header">
+                <a href={record.website}><h2>{record.name}</h2></a>
+            </div>
+            
+            <div className="results-card-details">
+                <a href="/">{record.category}</a>
+                <a href="/">{dollarSigns(record.price)}<em>{dollarSignsPad(record.price)}</em></a>
+                <a href="/">{record.location}</a>
+                {resultType === 'nearMe' ? <a href="/">{record.distance.toFixed(2)} km away</a> : ''}
+            </div>
+            <div className="results-card-content">
+                <p>{record.description}</p>
+                <div className="results-card-links">
+                    <a>Website</a>
+                    <a>Instagram</a>
+                    <a>Google Maps</a>
+                </div>
+            </div>
+            <div className="results-card-secondary-tags">
                 {
-                    secondaryTagFilters.map((tag, index) => {
+                    record.secondary_tags.split(', ').slice(0,4).map((tag, key) => {
                         return (
-                            <button key={tag}
-                            className={getSecondaryTagFilterClass(tag)}
-                            onClick={() => handleSecondaryTagFilterClick(tag)}
-                            >
-                                {tag}
-                            </button>
+                            <a href='/' key={key}>{tag}</a>
                         )
                     })
                 }
             </div>
-            <button
-            className={getSecondaryFiltersButtonClass()}
-            onClick={handleSecondaryFiltersButtonClick}
-            >
-                Apply Filters
-            </button>
-            <button
-            className="clear-secondary-filters-button"
-            onClick={handleClearSecondaryFiltersClick}
-            >
-                Clear All Filters
-            </button>
         </div>
     )
 };
