@@ -5,7 +5,7 @@
   --primary: #4D2EE0;  
   --secondary: #ddcf11;
   --white: #FDFDFD;
-  --black: #333140;
+  --black: #434055;
   --background: #f9f2f8;
   --grey-light: #A8A2C680;
   --grey-dark: #8b86aa;
@@ -53,10 +53,31 @@ em {
   margin: 0 auto;
 }
 
+/*  Media Queries */
+
+@media (hover: hover) {
+  .search-tag:hover, .secondary-filter-tag:hover {
+    background-color: var(--primary);
+    color: var(--white);
+  }
+
+  .search-button-ready:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  }
+
+}
+
+@media only screen and (max-height: 700px) {
+  .search-hero {
+    padding-top: 2vh;
+  }
+}
+
 /* Header styles */
 
 .header-container {
   height: 50px;
+  width: 100%;
 }
 
 .header-container .content-container {
@@ -83,7 +104,7 @@ em {
   text-align: right;
 }
 
-.header p {
+.header a {
   font-size: 0.8rem;
 }
 
@@ -285,7 +306,7 @@ em {
   height: 30px;
   border-radius: 15px;
   border: 1px solid var(--primary);
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .search-tag-notselected {
@@ -369,7 +390,7 @@ em {
 }
 
 .filters-form {
-  width: 80%;
+  width: 100%;
   max-width: 350px;
   margin: 0 auto 10px;
   border: 1px solid var(--grey-light);
@@ -459,6 +480,8 @@ em {
   flex-direction: column;
   gap: 10px;
 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
   background-color: var(--background);
   color: var(--black);
   border-radius: 5px;
@@ -529,7 +552,7 @@ em {
 .no-results {
   border: 1px solid var(--grey-light);
   border-radius: 5px;
-  padding: 10px;
+  padding: 10px 15px;
 
   display: flex;
   flex-direction: column;
@@ -581,6 +604,28 @@ em {
   margin-bottom: 10px;
 }
 
+/* About and Contact Us styles */
+
+.about-container, .contactus-container {
+  padding: 50px 30px 20px;
+  font-size: 0.75rem;
+  min-height: 80vh;
+}
+
+.about-container p, .contactus-container p {
+  margin-bottom: 20px;
+}
+
+.about-container img {
+  width: 90%;
+  display: block;
+  margin: 0 auto;
+}
+
+.signoff, .contactus-container a {
+  color: var(--primary);
+}
+
 /* Footer styles */ 
 
 .footer-container {
@@ -613,24 +658,4 @@ em {
 
 .footer-body p {
   font-size: 0.625rem;
-}
-
-/*  Media Queries */
-
-@media (hover: hover) {
-  .search-tag:hover, .secondary-filter-tag:hover {
-    background-color: var(--primary);
-    color: var(--white);
-  }
-
-  .search-button-ready:hover {
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-  }
-
-}
-
-@media only screen and (max-height: 700px) {
-  .search-hero {
-    padding-top: 2vh;
-  }
 }

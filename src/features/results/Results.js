@@ -20,7 +20,6 @@ import {
     } from './resultsSlice';
 
 import downArrow from './../../assets/general_icons/down_arrow.svg'
-import image from './../../assets/images/photo1.jpeg'
 
 const Results = () => {
     const navigate = useNavigate();
@@ -56,7 +55,7 @@ const ResultsError = () => {
         <div className="content-container">
             <div className="results-error">
                 <h3>Oh no! A bug!</h3>
-                <p>We are working on fixing this as soon as possible. If you would like, you can <a>contact us here</a> to give us more details.</p>
+                <p>We are working on fixing this as soon as possible. If you would like, you can <a href='mailto:hello@roobie.com.au'>contact us here</a> to give us more details.</p>
             </div>
         </div>
     )
@@ -157,7 +156,7 @@ const ResultsFilters = () => {
                     onClick={handleDropdownButtonClick}
                     >
                         Hide Filters
-                        <img className="search-city-down-arrow" src={downArrow} />
+                        <img className="search-city-down-arrow" src={downArrow} alt=""/>
                     </button>
                 </div>
                 <div className="filters-form">
@@ -201,7 +200,7 @@ const ResultsFilters = () => {
                     onClick={handleDropdownButtonClick}
                     >
                         More Filters
-                        <img className="search-city-down-arrow" src={downArrow} />
+                        <img className="search-city-down-arrow" src={downArrow} alt=""/>
                     </button>
                 </div>
             </div>
@@ -223,17 +222,18 @@ const ResultCard = ({ record }) => {
             </div>
             
             <div className="results-card-details">
-                <a href="/">{record.category}</a>
-                <a href="/">{dollarSigns(record.price)}<em>{dollarSignsPad(record.price)}</em></a>
-                <a href="/">{record.location}</a>
-                {resultType === 'nearMe' ? <a href="/">{record.distance.toFixed(2)} km away</a> : ''}
+                <p>{record.category}</p>
+                <p>{dollarSigns(record.price)}<em>{dollarSignsPad(record.price)}</em></p>
+                <p>{record.location}</p>
+                {resultType === 'nearMe' ? <p>{record.distance.toFixed(2)} km away</p> : ''}
             </div>
+           
             <div className="results-card-content">
                 <p>{record.description}</p>
                 <div className="results-card-links">
-                    <a>Website</a>
-                    <a>Instagram</a>
-                    <a>Google Maps</a>
+                    <a href='https://www.goodheavens.com.au/'>Website</a>
+                    <a href='https://www.instagram.com.au'>Instagram</a>
+                    <a href='https://goo.gl/maps/MkYUPKf2pYM8NewT6'>Google Maps</a>
                 </div>
             </div>
             <div className="results-card-secondary-tags">
