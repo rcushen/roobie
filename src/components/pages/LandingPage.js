@@ -1,6 +1,6 @@
-import Header from './Header';
-import Search from '../features/search/Search';
-import Footer from '../features/footer/Footer';
+import Header from './../elements/Header';
+import Search from './../../features/search/Search';
+import Footer from './../elements/Footer';
 
 const LandingPage = () => {
     return (

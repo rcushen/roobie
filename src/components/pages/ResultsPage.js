@@ -1,12 +1,12 @@
-import Header from './Header';
-import Results from '../features/results/Results';
-import Footer from '../features/footer/Footer';
+import Header from './../elements/Header';
+import Results from './../../features/results/Results';
+import Footer from './../elements/Footer';
 
 import { useSelector } from 'react-redux';
 
 import {
     selectResultsStatus
-    } from '../features/results/resultsSlice';
+    } from '../../features/results/resultsSlice';
 
 const ResultsPage = () => {
     const resultsStatus = useSelector(selectResultsStatus);

@@ -1,6 +1,6 @@
-import Header from './Header';
-import ContactUs from '../features/contactus/ContactUs';
-import Footer from '../features/footer/Footer';
+import Header from './../elements/Header';
+import ContactUs from './../elements/ContactUs';
+import Footer from './../elements/Footer';
 
 const ContactUsPage = () => {
     return (

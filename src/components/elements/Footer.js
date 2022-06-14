@@ -2,6 +2,8 @@ import facebook from './../../assets/social_media_icons/facebook.png';
 import instagram from './../../assets/social_media_icons/instagram.png'
 import linkedin from './../../assets/social_media_icons/linkedin.png'
 
+import './../ComponentStyles.css'
+
 const Footer = ({resultsStatus = "succeeded"}) => {
     if (resultsStatus !== "succeeded") {
         return "";

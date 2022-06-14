@@ -1,6 +1,6 @@
-import Header from './Header';
-import About from '../features/about/About';
-import Footer from '../features/footer/Footer';
+import Header from './../elements/Header';
+import About from './../elements/About';
+import Footer from './../elements/Footer';
 
 const AboutPage = () => {
     return (

@@ -1,6 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import './Search.css'
+
 import {
   selectSearchCity,
   selectSearchCityOpen,
@@ -94,7 +96,7 @@ const SearchCity = () => {
             className="search-city-button"
             onClick={handleSearchCityButtonClick}
           >
-            {searchCity} <img className="search-city-down-arrow" src={downArrow} />
+            {searchCity} <img className="search-city-down-arrow" src={downArrow} alt='' />
           </button>
         </div>
       </div>
@@ -180,7 +182,7 @@ const SearchForm = () => {
           className={setSearchButtonClasses(readyToSearch)}
           onClick={handleSearchButtonClick}
         >
-          Find Venues
+          <span>Find Venues</span>
         </button>
       </div>
     </div>

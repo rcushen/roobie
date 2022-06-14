@@ -1,3 +1,5 @@
+import './../ComponentStyles.css'
+
 const ContactUs = () => {
     return (
         <div className="content-container">

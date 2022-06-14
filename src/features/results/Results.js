@@ -21,6 +21,8 @@ import {
 
 import downArrow from './../../assets/general_icons/down_arrow.svg'
 
+import './Results.css'
+
 const Results = () => {
     const navigate = useNavigate();
     const resultsStatus = useSelector(selectResultsStatus);

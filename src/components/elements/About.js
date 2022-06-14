@@ -1,3 +1,5 @@
+import './../ComponentStyles.css'
+
 import turtlenecks from '../../assets/images/turtlenecks.png'
 
 const About = () => {

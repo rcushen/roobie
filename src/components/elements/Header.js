@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import './../ComponentStyles.css'
+
 const Header = ({landing}) => {
     
     return (
