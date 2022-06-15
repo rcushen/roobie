@@ -114,6 +114,23 @@ const ResultsFilters = () => {
     const secondaryTagFiltersState = useSelector(selectSecondaryTagFilters);
     const secondaryTagFilters = Object.keys(secondaryTagFiltersState);
 
+    const secondaryTagFiltersCategories = {
+        "Food":["great snacks","pub grub","proper meals","gluten free options","top tier chippies","charc"],
+        "Drink":["great beers","vino on point","killer cocktails"],
+        "Vibe":["quiet","good for the sesh","lively","has a theme"],
+        "Time":["lunchtime","afternoon","evening","late-night"],
+        "Setting":["might have to stand","tiny","large","good views","rooftop","iconic"],
+        "Special":["happy hour now","roobie's choice","new","cover charge"]
+    };
+    let secondaryTagFiltersCategorised = Object.keys(secondaryTagFiltersCategories).reduce((o, key) => ({...o, [key]:[]}), {});
+    secondaryTagFilters.forEach(tag => {
+        for (const category of Object.keys(secondaryTagFiltersCategories)) {
+            if (secondaryTagFiltersCategories[category].includes(tag)) {
+                secondaryTagFiltersCategorised[category] = [...secondaryTagFiltersCategorised[category], tag];
+            };
+        };
+    });
+
     // Define helper functions
     const getSecondaryTagFilterClass = tag => {
         const filterTagState = secondaryTagFiltersState[tag];
@@ -164,15 +181,30 @@ const ResultsFilters = () => {
                 <div className="filters-form">
                     <div className="filters-gallery">
                         {
-                            secondaryTagFilters.map((tag, index) => {
-                                return (
-                                    <button key={tag}
-                                    className={getSecondaryTagFilterClass(tag)}
-                                    onClick={() => handleSecondaryTagFilterClick(tag)}
-                                    >
-                                        {tag}
-                                    </button>
-                                )
+                            Object.keys(secondaryTagFiltersCategorised).map((category, index) => {
+                                if (secondaryTagFiltersCategorised[category].length === 0) {
+                                    return ""
+                                } else {
+                                    return (
+                                        <div className="filters-category" key={index}>
+                                            <p>{category}</p>
+                                            <div className="filters-category-gallery">
+                                                {
+                                                    secondaryTagFiltersCategorised[category].map((tag, index) => {
+                                                        return (
+                                                            <button key={tag}
+                                                            className={getSecondaryTagFilterClass(tag)}
+                                                            onClick={() => handleSecondaryTagFilterClick(tag)}
+                                                            >
+                                                                {tag}
+                                                            </button>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    )
+                                }
                             })
                         }
                     </div>
