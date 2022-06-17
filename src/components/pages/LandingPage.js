@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Header from './../elements/Header';
 import Search from './../../features/search/Search';
 import Footer from './../elements/Footer';

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import './../ComponentStyles.css'
 
 import turtlenecks from '../../assets/images/turtlenecks.png'

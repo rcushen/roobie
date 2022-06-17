@@ -17,33 +17,33 @@ const tagSearchString = `
     ), primary_tags AS (
         SELECT
             vt.venue_id,
-            string_agg(tag, ', ') AS primary_tags
+            string_agg(t.tag, ', ') AS primary_tags
         FROM
             data__venue_tags AS vt
-        LEFT JOIN
-            data__tags AS t
-        ON
-            vt.tag_id = t.tag_id
+            LEFT JOIN
+                data__tags AS t
+            ON
+                vt.tag_id = t.tag_id
         WHERE
             vt.venue_id IN (SELECT venue_id FROM relevant_venues) AND
             t.type = 'Primary'
         GROUP BY
-	        venue_id
+	        vt.venue_id
     ), secondary_tags AS (
         SELECT
             vt.venue_id,
-            string_agg(tag, ', ') AS secondary_tags
+            string_agg(t.tag, ', ') AS secondary_tags
         FROM
             data__venue_tags AS vt
-        LEFT JOIN
-            data__tags AS t
-        ON
-            vt.tag_id = t.tag_id
+            LEFT JOIN
+                data__tags AS t
+            ON
+                vt.tag_id = t.tag_id
         WHERE
             vt.venue_id IN (SELECT venue_id FROM relevant_venues) AND
             t.type = 'Secondary'
         GROUP BY
-	        venue_id
+	        vt.venue_id
     )
     SELECT
         *
@@ -76,10 +76,10 @@ const nearMeSearchString = `
             string_agg(tag, ', ') AS primary_tags
         FROM
             data__venue_tags AS vt
-        LEFT JOIN
-            data__tags AS t
-        ON
-            vt.tag_id = t.tag_id
+            LEFT JOIN
+                data__tags AS t
+            ON
+                vt.tag_id = t.tag_id
         WHERE
             t.type = 'Primary'
         GROUP BY
@@ -90,10 +90,10 @@ const nearMeSearchString = `
             string_agg(tag, ', ') AS secondary_tags
         FROM
             data__venue_tags AS vt
-        LEFT JOIN
-            data__tags AS t
-        ON
-            vt.tag_id = t.tag_id
+            LEFT JOIN
+                data__tags AS t
+            ON
+                vt.tag_id = t.tag_id
         WHERE
             t.type = 'Secondary'
         GROUP BY

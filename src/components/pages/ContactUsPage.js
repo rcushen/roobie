@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Header from './../elements/Header';
 import ContactUs from './../elements/ContactUs';
 import Footer from './../elements/Footer';

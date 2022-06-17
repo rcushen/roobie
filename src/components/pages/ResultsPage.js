@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Header from './../elements/Header';
 import Results from './../../features/results/Results';
 import Footer from './../elements/Footer';
