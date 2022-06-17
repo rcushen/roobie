@@ -10,7 +10,7 @@
 /build
 
 # data
-/server/db
+/server/db/imports
 /credentials
 
 # assets
