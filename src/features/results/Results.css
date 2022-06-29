@@ -200,10 +200,17 @@
   background-color: var(--primary-light);
   font-size: 0.75rem;
   padding: 10px 15px;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+
   row-gap: 5px;
+  column-gap: 10px;
 }
 
-.results-card-details, .results-card-secondary-tags {
+.results-card-details {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;

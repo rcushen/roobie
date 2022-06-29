@@ -36,7 +36,7 @@ const ResultCard = ({ record }) => {
             </div>
             <div className="results-card-secondary-tags">
                 {
-                    record.secondary_tags.split(', ').slice(0,4).map((tag, key) => {
+                    record.secondary_tags.split(', ').map((tag, key) => {
                         return (
                             <a href='/' key={key}>{tag}</a>
                         )
