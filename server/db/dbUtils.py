@@ -4,6 +4,26 @@ import sqlalchemy as db
 
 # Define helper functions
 def update(args):
+    """
+    Update the roobie database.
+
+    Using the -a flag, takes all of the files in the ./imports directory and
+    uses these to completely refresh the database. In particular, this means:
+        
+        1. Adding any new venues in the ./imports/venues.csv file and updating
+        the details of any existing venues in the database with the same name.
+
+        2. Completely deleting all existing tags in the database and rebuilding
+        the listing from scratch, using the ./imports/tags.csv file.
+
+        3. Completely deleting all existing venue_tags in the database and
+        rebuilding the listing from scratch, using the ./imports/venue_tags.csv.
+
+    Usage
+    ----------
+    -a: draws on all files in the ./imports directory
+
+    """
     if args == ['-a']:
         # Read in the datafiles
         print('Reading in datafiles...')
@@ -23,8 +43,18 @@ def update(args):
     else:
         raise Exception('You are not using the --update command properly')
 
-
 def delete(args):
+    """
+    Delete venues from the database.
+    
+    Taking in a list of venue names, this function looks up each venue
+    by name in the database and deletes it, along with all of its tags.
+
+    Usage
+    ----------
+    <venue name>...: names of venues to delete
+    
+    """
     if len(args) > 0:
         delete_from_database(args)
     else:
